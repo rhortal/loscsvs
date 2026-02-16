@@ -1,4 +1,5 @@
-# Logs
+# Example CSVs for testing merge rules
+csv-examples/
 logs
 *.log
 npm-debug.log*
