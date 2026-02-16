@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": "Roberto Hortal",
+  "license": "PROPRIETARY",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
