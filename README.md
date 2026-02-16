@@ -96,5 +96,5 @@ miguelito/
 
 ## License
 
-This project is proprietary and confidential. See [LICENSE](LICENSE) for full terms.
+This project is proprietary and confidential. See [LICENSE](LICENSE.md) for full terms.
 Copyright (c) 2026 Roberto Hortal. All rights reserved.

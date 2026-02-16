@@ -28,4 +28,4 @@ particular purpose, and noninfringement.
 
 ## Contact
 
-For licensing inquiries, contact: Roberto Hortal
+For licensing inquiries, contact: Roberto Hortal at rhortal@gmail.com
