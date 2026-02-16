@@ -22,8 +22,8 @@ A simple, user-friendly web application for merging two CSV files into one. Buil
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd miguelito
+git clone [https://github.com/rhortal/loscsvs.git]
+cd loscsvs
 ```
 
 2. Install dependencies:
