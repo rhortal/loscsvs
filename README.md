@@ -22,7 +22,7 @@ A simple, user-friendly web application for merging two CSV files into one. Buil
 
 1. Clone the repository:
 ```bash
-git clone [https://github.com/rhortal/loscsvs.git]
+git clone [https://github.com/rhortal/loscsvs.git](https://github.com/rhortal/loscsvs.git)
 cd loscsvs
 ```
 
