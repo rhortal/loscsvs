@@ -1,0 +1,34 @@
+{
+  "app": {
+    "title": "Utilidad de Fusión CSV",
+    "subtitle": "Combina archivos CSV fácilmente"
+  },
+  "upload": {
+    "file1": "Archivo 1",
+    "file2": "Archivo 2",
+    "dropzone": "Arrastra un archivo CSV aquí o haz clic para buscar",
+    "uploaded": "Archivo cargado",
+    "rows": "filas",
+    "columns": "columnas"
+  },
+  "preview": {
+    "title": "Vista Previa",
+    "noData": "Sin datos cargados",
+    "firstRows": "Primeras 5 filas"
+  },
+  "rules": {
+    "title": "Reglas de Fusión",
+    "placeholder": "Las reglas de fusión se definirán aquí"
+  },
+  "actions": {
+    "merge": "Fusionar Archivos",
+    "download": "Descargar CSV Fusionado",
+    "clear": "Limpiar Todo",
+    "language": "Idioma"
+  },
+  "messages": {
+    "mergeSuccess": "¡Archivos fusionados exitosamente!",
+    "noFiles": "Por favor carga ambos archivos CSV primero",
+    "parseError": "Error al analizar el archivo CSV"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "app": {
+    "title": "CSV Merge Utility",
+    "subtitle": "Combine CSV files easily"
+  },
+  "upload": {
+    "file1": "File 1",
+    "file2": "File 2",
+    "dropzone": "Drop CSV file here or click to browse",
+    "uploaded": "File uploaded",
+    "rows": "rows",
+    "columns": "columns"
+  },
+  "preview": {
+    "title": "Preview",
+    "noData": "No data loaded",
+    "firstRows": "First 5 rows"
+  },
+  "rules": {
+    "title": "Merge Rules",
+    "placeholder": "Merge rules will be defined here"
+  },
+  "actions": {
+    "merge": "Merge Files",
+    "download": "Download Merged CSV",
+    "clear": "Clear All",
+    "language": "Language"
+  },
+  "messages": {
+    "mergeSuccess": "Files merged successfully!",
+    "noFiles": "Please upload both CSV files first",
+    "parseError": "Error parsing CSV file"
+  }
+}
