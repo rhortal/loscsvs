@@ -1,13 +1,16 @@
 import './style.css';
 import { t, changeLanguage, getCurrentLanguage, getAvailableLanguages } from './i18n/index.js';
 import Papa from 'papaparse';
+import JSZip from 'jszip';
 
 const state = {
   file1: null,
   file2: null,
   data1: null,
   data2: null,
-  mergedData: null
+  mergedData: null,
+  mergedByProperty: null,
+  selectedPropertyId: null
 };
 
 function init() {
@@ -301,7 +304,8 @@ function mergeFiles() {
   console.log('Unmatched bookings:', unmatchedBookings);
   console.log('Bookings by property:', Array.from(bookingsByProperty.keys()));
 
-  const output = [];
+  const mergedByProperty = new Map();
+  const allRows = [];
 
   const sortedPropertyIds = Array.from(bookingsByProperty.keys()).sort();
 
@@ -309,6 +313,7 @@ function mergeFiles() {
     const prop = propertyMap.get(propId);
     if (!prop) return;
 
+    const propName = prop['Alojamiento'] || prop['alojamiento'] || propId;
     const bookingsList = bookingsByProperty.get(propId);
     
     const touristBookings = bookingsList.filter(b => {
@@ -338,6 +343,8 @@ function mergeFiles() {
     const edificio = prop['Edificio'] || '';
     const guests = getGuestsFromProperty(edificio);
 
+    const propertyOutput = [];
+
     touristBookings.forEach(booking => {
       const entryDate = booking['Fecha entrada'] || booking['fecha entrada'] || '';
       const exitDate = booking['Fecha salida'] || booking['fecha salida'] || '';
@@ -346,26 +353,30 @@ function mergeFiles() {
       const formattedEntry = formatDate(entryDate);
       const formattedExit = formatDateExit(entryDate, exitDate);
 
-      output.push({
+      const row = {
         'NRUA': nru,
         'Finalidad (1)': 'Vacacional/Turístico',
         'Nº de huéspedes': guests,
         'Fecha de entrada (dd.mm.aaaa)': formattedEntry,
         'Fecha de salida (dd.mm.aaaa)': formattedExit,
         'Sin actividad (3)': ''
-      });
+      };
+      propertyOutput.push(row);
+      allRows.push(row);
     });
 
     if (touristBookings.length > 0 && nonTouristBookings.length > 0) {
       for (let i = 0; i < 4; i++) {
-        output.push({
+        const emptyRow = {
           'NRUA': '',
           'Finalidad (1)': '',
           'Nº de huéspedes': '',
           'Fecha de entrada (dd.mm.aaaa)': '',
           'Fecha de salida (dd.mm.aaaa)': '',
           'Sin actividad (3)': ''
-        });
+        };
+        propertyOutput.push(emptyRow);
+        allRows.push(emptyRow);
       }
     }
 
@@ -377,52 +388,85 @@ function mergeFiles() {
       const formattedEntry = formatDate(entryDate);
       const formattedExit = formatDateExit(entryDate, exitDate);
 
-      output.push({
+      const row = {
         'NRUA': nru,
         'Finalidad (1)': 'Vacacional/Turístico',
         'Nº de huéspedes': guests,
         'Fecha de entrada (dd.mm.aaaa)': formattedEntry,
         'Fecha de salida (dd.mm.aaaa)': formattedExit,
         'Sin actividad (3)': ''
-      });
+      };
+      propertyOutput.push(row);
+      allRows.push(row);
+    });
+
+    mergedByProperty.set(propId, {
+      name: propName,
+      rows: propertyOutput
     });
   });
 
-  state.mergedData = output;
-  console.log('Output rows:', output.length);
+  state.mergedData = allRows;
+  state.mergedByProperty = mergedByProperty;
+  state.selectedPropertyId = sortedPropertyIds.length > 0 ? sortedPropertyIds[0] : null;
+  
+  console.log('Output rows:', allRows.length);
+  console.log('Properties with data:', mergedByProperty.size);
 
-  renderReportPreview(output);
+  renderReportPreview();
   
   showMessage(t('messages.mergeSuccess'), 'success');
   document.getElementById('download-btn').disabled = false;
 }
 
-function renderReportPreview(data) {
+function renderReportPreview() {
   const preview = document.getElementById('preview3');
-  if (!data || data.length === 0) {
+  
+  if (!state.mergedByProperty || state.mergedByProperty.size === 0) {
     preview.innerHTML = `<span data-i18n="report.noData">${t('report.noData')}</span>`;
     return;
   }
 
-  const columns = Object.keys(data[0]);
-  const rows = data.slice(0, 10);
+  const propertyIds = Array.from(state.mergedByProperty.keys()).sort();
+  
+  let html = `<div class="property-selector">`;
+  html += `<label>${t('report.selectProperty') || 'Select Property'}: </label>`;
+  html += `<select id="property-select">`;
+  propertyIds.forEach(propId => {
+    const propData = state.mergedByProperty.get(propId);
+    const isSelected = propId === state.selectedPropertyId ? 'selected' : '';
+    html += `<option value="${propId}" ${isSelected}>${propId} - ${escapeHtml(propData.name)} (${propData.rows.length} ${t('report.rows') || 'rows'})</option>`;
+  });
+  html += `</select>`;
+  html += `</div>`;
 
-  let html = `<p class="preview-label">${t('preview.firstRows')} (${data.length} ${t('report.totalRows')})</p>`;
-  html += '<table class="preview-table"><thead><tr>';
-  columns.forEach(col => {
-    html += `<th>${escapeHtml(col)}</th>`;
-  });
-  html += '</tr></thead><tbody>';
-  rows.forEach(row => {
-    html += '<tr>';
+  const selectedData = state.mergedByProperty.get(state.selectedPropertyId);
+  if (selectedData) {
+    const columns = Object.keys(selectedData.rows[0] || {});
+    const rows = selectedData.rows.slice(0, 10);
+
+    html += `<p class="preview-label">${t('preview.firstRows')} (${selectedData.rows.length} ${t('report.totalRows')})</p>`;
+    html += '<table class="preview-table"><thead><tr>';
     columns.forEach(col => {
-      html += `<td>${escapeHtml(row[col] || '')}</td>`;
+      html += `<th>${escapeHtml(col)}</th>`;
     });
-    html += '</tr>';
-  });
-  html += '</tbody></table>';
+    html += '</tr></thead><tbody>';
+    rows.forEach(row => {
+      html += '<tr>';
+      columns.forEach(col => {
+        html += `<td>${escapeHtml(row[col] || '')}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+  }
 
   preview.innerHTML = html;
+
+  document.getElementById('property-select').addEventListener('change', (e) => {
+    state.selectedPropertyId = e.target.value;
+    renderReportPreview();
+  });
   
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -481,20 +525,25 @@ function getGuestsFromProperty(edificio) {
   return 2;
 }
 
-function downloadMerged() {
-  if (!state.mergedData || state.mergedData.length === 0) {
+async function downloadMerged() {
+  if (!state.mergedByProperty || state.mergedByProperty.size === 0) {
     return;
   }
 
-  const csv = Papa.unparse(state.mergedData, {
-    columns: ['NRUA', 'Finalidad (1)', 'Nº de huéspedes', 'Fecha de entrada (dd.mm.aaaa)', 'Fecha de salida (dd.mm.aaaa)', 'Sin actividad (3)']
+  const zip = new JSZip();
+  const columns = ['NRUA', 'Finalidad (1)', 'Nº de huéspedes', 'Fecha de entrada (dd.mm.aaaa)', 'Fecha de salida (dd.mm.aaaa)', 'Sin actividad (3)'];
+
+  state.mergedByProperty.forEach((propData, propId) => {
+    const csv = Papa.unparse(propData.rows, { columns });
+    zip.file(`${propId}.csv`, csv);
   });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
+
+  const content = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(content);
 
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'informe_propiedades.csv';
+  link.download = 'informes_propiedades.zip';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -509,6 +558,8 @@ function clearAll() {
   state.data1 = null;
   state.data2 = null;
   state.mergedData = null;
+  state.mergedByProperty = null;
+  state.selectedPropertyId = null;
 
   document.getElementById('dropzone1').innerHTML = `<span data-i18n="upload.dropzone">${t('upload.dropzone')}</span>`;
   document.getElementById('dropzone2').innerHTML = `<span data-i18n="upload.dropzone">${t('upload.dropzone')}</span>`;

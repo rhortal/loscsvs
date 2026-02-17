@@ -21,7 +21,9 @@
   "report": {
     "title": "Report",
     "noData": "No report generated",
-    "totalRows": "total rows"
+    "totalRows": "total rows",
+    "selectProperty": "Select Property",
+    "rows": "rows"
   },
   "rules": {
     "title": "Merge Rules",
@@ -29,7 +31,7 @@
   },
   "actions": {
     "merge": "Generate Report",
-    "download": "Download Report CSV",
+    "download": "Download ZIP",
     "clear": "Clear All",
     "discard": "Discard",
     "language": "Language"
@@ -38,6 +40,6 @@
     "mergeSuccess": "Report generated successfully!",
     "noFiles": "Please upload both CSV files first",
     "parseError": "Error parsing CSV file",
-    "downloadSuccess": "CSV file downloaded successfully!"
+    "downloadSuccess": "Files downloaded successfully!"
   }
 }

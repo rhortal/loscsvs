@@ -21,7 +21,9 @@
   "report": {
     "title": "Informe",
     "noData": "Sin informe generado",
-    "totalRows": "filas totales"
+    "totalRows": "filas totales",
+    "selectProperty": "Seleccionar Propiedad",
+    "rows": "filas"
   },
   "rules": {
     "title": "Reglas de Fusión",
@@ -29,7 +31,7 @@
   },
   "actions": {
     "merge": "Generar Informe",
-    "download": "Descargar Informe CSV",
+    "download": "Descargar ZIP",
     "clear": "Limpiar Todo",
     "discard": "Descartar",
     "language": "Idioma"
@@ -38,6 +40,6 @@
     "mergeSuccess": "¡Informe generado exitosamente!",
     "noFiles": "Por favor carga ambos archivos CSV primero",
     "parseError": "Error al analizar el archivo CSV",
-    "downloadSuccess": "¡Archivo CSV descargado exitosamente!"
+    "downloadSuccess": "¡Archivos descargados exitosamente!"
   }
 }

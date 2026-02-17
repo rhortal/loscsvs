@@ -206,7 +206,29 @@ body {
 .preview-label {
   margin: 0 0 0.5rem 0;
   font-size: 0.85rem;
-  color: #888;
+  color: #888
+}
+
+.property-selector {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.property-selector label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.property-selector select {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: white;
+  cursor: pointer;
+  max-width: 400px;
 }
 
 .preview-table {
