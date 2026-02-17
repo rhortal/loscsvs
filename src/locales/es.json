@@ -18,6 +18,11 @@
     "noData": "Sin datos cargados",
     "firstRows": "Primeras 5 filas"
   },
+  "report": {
+    "title": "Informe",
+    "noData": "Sin informe generado",
+    "totalRows": "filas totales"
+  },
   "rules": {
     "title": "Reglas de Fusión",
     "placeholder": "Las reglas de fusión se definirán aquí"
@@ -26,6 +31,7 @@
     "merge": "Generar Informe",
     "download": "Descargar Informe CSV",
     "clear": "Limpiar Todo",
+    "discard": "Descartar",
     "language": "Idioma"
   },
   "messages": {

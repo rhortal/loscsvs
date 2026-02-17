@@ -54,20 +54,34 @@ function renderApp() {
         </div>
       </section>
 
-      <section class="preview-section">
-        <div class="preview-panel" id="preview1">
-          <h3>${t('upload.properties')} - <span data-i18n="preview.title">${t('preview.title')}</span></h3>
-          <div class="preview-content" data-i18n="preview.noData">${t('preview.noData')}</div>
+      <section class="report-section">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="1">${t('upload.properties')}</button>
+          <button class="tab-btn" data-tab="2">${t('upload.bookings')}</button>
+          <button class="tab-btn" data-tab="3">${t('report.title')}</button>
         </div>
-        <div class="preview-panel" id="preview2">
-          <h3>${t('upload.bookings')} - <span data-i18n="preview.title">${t('preview.title')}</span></h3>
-          <div class="preview-content" data-i18n="preview.noData">${t('preview.noData')}</div>
+        <div class="tab-panels">
+          <div class="tab-panel active" id="panel1">
+            <div class="panel-header">
+              <h3 data-i18n="preview.title">${t('preview.title')}</h3>
+              <button class="btn btn-outline btn-small discard-btn" data-file="1" style="display:none">${t('actions.discard')}</button>
+            </div>
+            <div class="preview-content" id="preview1" data-i18n="preview.noData">${t('preview.noData')}</div>
+          </div>
+          <div class="tab-panel" id="panel2">
+            <div class="panel-header">
+              <h3 data-i18n="preview.title">${t('preview.title')}</h3>
+              <button class="btn btn-outline btn-small discard-btn" data-file="2" style="display:none">${t('actions.discard')}</button>
+            </div>
+            <div class="preview-content" id="preview2" data-i18n="preview.noData">${t('preview.noData')}</div>
+          </div>
+          <div class="tab-panel" id="panel3">
+            <div class="panel-header">
+              <h3 data-i18n="report.title">${t('report.title')}</h3>
+            </div>
+            <div class="preview-content" id="preview3" data-i18n="report.noData">${t('report.noData')}</div>
+          </div>
         </div>
-      </section>
-
-      <section class="rules-section">
-        <h3 data-i18n="rules.title">${t('rules.title')}</h3>
-        <p data-i18n="rules.placeholder">${t('rules.placeholder')}</p>
       </section>
 
       <section class="actions-section">
@@ -97,6 +111,22 @@ function setupEventListeners() {
   document.getElementById('merge-btn').addEventListener('click', mergeFiles);
   document.getElementById('download-btn').addEventListener('click', downloadMerged);
   document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(`panel${btn.dataset.tab}`).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.discard-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fileNum = btn.dataset.file;
+      discardFile(fileNum);
+    });
+  });
 }
 
 function setupDropzone(dropzone, fileKey) {
@@ -174,6 +204,7 @@ function handleFileSelect(file, fileKey) {
       dropzone.innerHTML = `<span class="file-name">${file.name}</span>`;
       fileInfo.innerHTML = `<span>${data.length} ${t('upload.rows')}, ${Object.keys(data[0] || {}).length} ${t('upload.columns')}</span>`;
 
+      document.querySelector(`.discard-btn[data-file="${fileKey.replace('file', '')}"]`).style.display = 'block';
       renderPreview(fileKey.replace('file', ''), data);
     }
   });
@@ -182,7 +213,7 @@ function handleFileSelect(file, fileKey) {
 function renderPreview(num, data) {
   const preview = document.getElementById(`preview${num}`);
   if (!data || data.length === 0) {
-    preview.querySelector('.preview-content').innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
+    preview.innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
     return;
   }
 
@@ -204,7 +235,7 @@ function renderPreview(num, data) {
   });
   html += '</tbody></table>';
 
-  preview.querySelector('.preview-content').innerHTML = html;
+  preview.innerHTML = html;
 }
 
 function mergeFiles() {
@@ -235,8 +266,10 @@ function mergeFiles() {
 
   console.log('Property IDs:', Array.from(propertyMap.keys()));
   console.log('Property names:', Array.from(propertyNameMap.keys()));
+  console.log('Total bookings:', bookings.length);
 
   const bookingsByProperty = new Map();
+  const unmatchedBookings = [];
   bookings.forEach(booking => {
     let propId = booking['id alojamiento'] || booking['Id alojamiento'];
     let prop = null;
@@ -259,9 +292,13 @@ function mergeFiles() {
         bookingsByProperty.set(finalPropId, []);
       }
       bookingsByProperty.get(finalPropId).push(booking);
+    } else {
+      console.log('Unmatched booking:', { id: propId, name: booking['Nombre alojamiento'] || booking['nombre alojamiento'] });
+      unmatchedBookings.push({ id: propId, name: booking['Nombre alojamiento'] || booking['nombre alojamiento'] });
     }
   });
 
+  console.log('Unmatched bookings:', unmatchedBookings);
   console.log('Bookings by property:', Array.from(bookingsByProperty.keys()));
 
   const output = [];
@@ -304,9 +341,8 @@ function mergeFiles() {
     touristBookings.forEach(booking => {
       const entryDate = booking['Fecha entrada'] || booking['fecha entrada'] || '';
       const exitDate = booking['Fecha salida'] || booking['fecha salida'] || '';
-      const noches = parseInt(booking['noches'] || booking['Noches'] || '0', 10);
       
-      const nru = noches <= 10 ? turisticoNRU : noTuristicoNRU;
+      const nru = turisticoNRU;
       const formattedEntry = formatDate(entryDate);
       const formattedExit = formatDateExit(entryDate, exitDate);
 
@@ -320,26 +356,29 @@ function mergeFiles() {
       });
     });
 
-    for (let i = 0; i < 4; i++) {
-      output.push({
-        'NRUA': turisticoNRU,
-        'Finalidad (1)': '',
-        'Nº de huéspedes': '',
-        'Fecha de entrada (dd.mm.aaaa)': '',
-        'Fecha de salida (dd.mm.aaaa)': '',
-        'Sin actividad (3)': ''
-      });
+    if (touristBookings.length > 0 && nonTouristBookings.length > 0) {
+      for (let i = 0; i < 4; i++) {
+        output.push({
+          'NRUA': '',
+          'Finalidad (1)': '',
+          'Nº de huéspedes': '',
+          'Fecha de entrada (dd.mm.aaaa)': '',
+          'Fecha de salida (dd.mm.aaaa)': '',
+          'Sin actividad (3)': ''
+        });
+      }
     }
 
     nonTouristBookings.forEach(booking => {
       const entryDate = booking['Fecha entrada'] || booking['fecha entrada'] || '';
       const exitDate = booking['Fecha salida'] || booking['fecha salida'] || '';
       
+      const nru = noTuristicoNRU;
       const formattedEntry = formatDate(entryDate);
       const formattedExit = formatDateExit(entryDate, exitDate);
 
       output.push({
-        'NRUA': noTuristicoNRU,
+        'NRUA': nru,
         'Finalidad (1)': 'Vacacional/Turístico',
         'Nº de huéspedes': guests,
         'Fecha de entrada (dd.mm.aaaa)': formattedEntry,
@@ -352,8 +391,43 @@ function mergeFiles() {
   state.mergedData = output;
   console.log('Output rows:', output.length);
 
+  renderReportPreview(output);
+  
   showMessage(t('messages.mergeSuccess'), 'success');
   document.getElementById('download-btn').disabled = false;
+}
+
+function renderReportPreview(data) {
+  const preview = document.getElementById('preview3');
+  if (!data || data.length === 0) {
+    preview.innerHTML = `<span data-i18n="report.noData">${t('report.noData')}</span>`;
+    return;
+  }
+
+  const columns = Object.keys(data[0]);
+  const rows = data.slice(0, 10);
+
+  let html = `<p class="preview-label">${t('preview.firstRows')} (${data.length} ${t('report.totalRows')})</p>`;
+  html += '<table class="preview-table"><thead><tr>';
+  columns.forEach(col => {
+    html += `<th>${escapeHtml(col)}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+  rows.forEach(row => {
+    html += '<tr>';
+    columns.forEach(col => {
+      html += `<td>${escapeHtml(row[col] || '')}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  preview.innerHTML = html;
+  
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="3"]').classList.add('active');
+  document.getElementById('panel3').classList.add('active');
 }
 
 function parseDate(dateStr) {
@@ -441,11 +515,25 @@ function clearAll() {
   document.getElementById('file1-info').innerHTML = '';
   document.getElementById('file2-info').innerHTML = '';
 
-  document.querySelector('#preview1 .preview-content').innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
-  document.querySelector('#preview2 .preview-content').innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
+  document.querySelectorAll('.discard-btn').forEach(btn => btn.style.display = 'none');
+  document.querySelector('#preview1').innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
+  document.querySelector('#preview2').innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
+  document.querySelector('#preview3').innerHTML = `<span data-i18n="report.noData">${t('report.noData')}</span>`;
 
   document.getElementById('download-btn').disabled = true;
   hideMessage();
+}
+
+function discardFile(num) {
+  state[`file${num}`] = null;
+  state[`data${num}`] = null;
+
+  document.getElementById(`dropzone${num}`).innerHTML = `<span data-i18n="upload.dropzone">${t('upload.dropzone')}</span>`;
+  document.getElementById(`file${num}-info`).innerHTML = '';
+  document.querySelector(`.discard-btn[data-file="${num}"]`).style.display = 'none';
+  document.getElementById(`preview${num}`).innerHTML = `<span data-i18n="preview.noData">${t('preview.noData')}</span>`;
+
+  document.getElementById('download-btn').disabled = true;
 }
 
 function showMessage(text, type) {
