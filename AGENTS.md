@@ -3,34 +3,40 @@
 ## Project Overview
 - **Name**: CSV Merge Utility
 - **Type**: Client-side web application (Vite + pure JS)
-- **Purpose**: Merge two CSV files into one with intelligent merge rules
+- **Purpose**: Merge property and booking data into separate reports per property
 - **License**: Proprietary - All rights reserved (see LICENSE.md)
 
 ## Key Files
-- `src/main.js` - Main application logic (merge happens at line 182)
+- `src/main.js` - Main application logic
 - `src/style.css` - Styles
 - `src/i18n/index.js` - Internationalization
 - `src/locales/` - Translation files (en.json, es.json)
-- `csv-examples/` - Example CSV files for testing merge rules
+- `csv-examples/` - Example CSV files for testing
 
-## Current Behavior
-The merge function (`mergeFiles` in `src/main.js:182`) currently just concatenates all rows from both files:
-```js
-state.mergedData = [...state.data1, ...state.data2];
-```
+## Testing Files
+Use these files for testing:
+- **Properties file**: `csv-examples/listado apartamento para enviar.csv` (104 rows)
+- **Bookings file**: `csv-examples/Listado pruebas 1-7-25 CSV.csv` (14 bookings)
 
-There's a placeholder UI section at `src/main.js:66-69` for displaying merge rules.
+## Current Implementation
 
-## Task: Implement Merge Rules
-The user will add CSV example files to `csv-examples/` folder to demonstrate desired merge behavior.
+### Merge Rules
+1. Match bookings to properties by ID (`Id. Vivienda`) or name (`Alojamiento`)
+2. For each property:
+   - **Tourist bookings** (1-10 nights): Use "Turistico" NRU code (ESFCTU...)
+   - **Non-tourist bookings** (11+ nights): Use "no turistico" NRU code (ESFCNT...)
+   - Tourist bookings first, then 4 empty rows if property has both types, then non-tourist
+3. Date format: dd.mm.aaaa (e.g., 01.07.2025)
+4. Exit date empty if cross-year
 
-### Steps:
-1. Wait for user to add CSV examples to `csv-examples/`
-2. Analyze the examples to determine merge rules
-3. Update `mergeFiles()` function in `src/main.js` to implement the rules
-4. Update the UI to show active merge rules
-5. Add relevant translation keys if needed
-6. Test the implementation
+### Report Generation
+- Generates separate CSV for each property
+- Downloads as ZIP file containing all property CSVs
+- Filename format: `{propertyId}.csv` (e.g., 502775.csv)
+- Preview shows dropdown to select between properties
+
+### Known Issues
+- 3 bookings don't match (OCE3 3A, OCE3 2A, MAR Y VENT 4D) - these properties don't exist in properties file
 
 ## Testing
 - Run `npm run dev` to start dev server
@@ -39,4 +45,5 @@ The user will add CSV example files to `csv-examples/` folder to demonstrate des
 ## Git Workflow
 - Create a new branch for any feature work
 - Commit with descriptive messages using `--author="AI <eleanor+ai@intellectronica.net>"`
-- Push and create PR for review
+- Merge to main and push
+- Delete feature branches when done
