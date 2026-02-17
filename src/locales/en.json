@@ -1,11 +1,13 @@
 {
   "app": {
-    "title": "CSV Merge Utility",
-    "subtitle": "Combine CSV files easily"
+    "title": "CSVS",
+    "subtitle": "Generate property reports with booking data"
   },
   "upload": {
-    "file1": "File 1",
-    "file2": "File 2",
+    "properties": "Properties File",
+    "propertiesDesc": "List of properties with NRU codes",
+    "bookings": "Bookings File",
+    "bookingsDesc": "List of reservations/bookings",
     "dropzone": "Drop CSV file here or click to browse",
     "uploaded": "File uploaded",
     "rows": "rows",
@@ -21,14 +23,15 @@
     "placeholder": "Merge rules will be defined here"
   },
   "actions": {
-    "merge": "Merge Files",
-    "download": "Download Merged CSV",
+    "merge": "Generate Report",
+    "download": "Download Report CSV",
     "clear": "Clear All",
     "language": "Language"
   },
   "messages": {
-    "mergeSuccess": "Files merged successfully!",
+    "mergeSuccess": "Report generated successfully!",
     "noFiles": "Please upload both CSV files first",
-    "parseError": "Error parsing CSV file"
+    "parseError": "Error parsing CSV file",
+    "downloadSuccess": "CSV file downloaded successfully!"
   }
 }

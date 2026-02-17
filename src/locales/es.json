@@ -1,11 +1,13 @@
 {
   "app": {
     "title": "Utilidad de Fusión CSV",
-    "subtitle": "Combina archivos CSV fácilmente"
+    "subtitle": "Genera informes de propiedades con datos de reservas"
   },
   "upload": {
-    "file1": "Archivo 1",
-    "file2": "Archivo 2",
+    "properties": "Archivo de Propiedades",
+    "propertiesDesc": "Lista de propiedades con códigos NRU",
+    "bookings": "Archivo de Reservas",
+    "bookingsDesc": "Lista de reservas/reservaciones",
     "dropzone": "Arrastra un archivo CSV aquí o haz clic para buscar",
     "uploaded": "Archivo cargado",
     "rows": "filas",
@@ -21,14 +23,15 @@
     "placeholder": "Las reglas de fusión se definirán aquí"
   },
   "actions": {
-    "merge": "Fusionar Archivos",
-    "download": "Descargar CSV Fusionado",
+    "merge": "Generar Informe",
+    "download": "Descargar Informe CSV",
     "clear": "Limpiar Todo",
     "language": "Idioma"
   },
   "messages": {
-    "mergeSuccess": "¡Archivos fusionados exitosamente!",
+    "mergeSuccess": "¡Informe generado exitosamente!",
     "noFiles": "Por favor carga ambos archivos CSV primero",
-    "parseError": "Error al analizar el archivo CSV"
+    "parseError": "Error al analizar el archivo CSV",
+    "downloadSuccess": "¡Archivo CSV descargado exitosamente!"
   }
 }

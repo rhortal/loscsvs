@@ -1,0 +1,5 @@
+name = "csvs"
+compatibility_date = "2025-02-17"
+pages_build_output_dir = "dist"
+
+[vars]
