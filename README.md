@@ -1,13 +1,19 @@
 # CSV Merge Utility
 
-A simple, user-friendly web application for merging two CSV files into one. Built with Vite, pure JavaScript, and supports multiple languages.
+A simple, user-friendly web application for merging property and booking data into separate reports per property. Built with Vite, pure JavaScript, and supports multiple languages.
+
+**Live Demo**: https://loscsvs.pages.dev
 
 ## Features
 
-- **Dual File Upload**: Drag and drop or click to upload two CSV files
-- **Live Preview**: View the first 5 rows of each uploaded file before merging
-- **One-Click Merge**: Combine both CSV files with a single click
-- **Download**: Export the merged result as a new CSV file
+- **Dual File Upload**: Upload properties and bookings CSV files
+- **Property Matching**: Automatically matches bookings to properties by ID or name
+- **Smart Merge Rules**: 
+  - Tourist stays (1-10 nights): Uses "Turistico" NRU code with "Vacacional/Turístico" finalidade
+  - Long stays (11+ nights): Uses "No turístico" NRU code with "No turístico" finalidade
+- **Separate Reports**: Generates individual CSV files per property
+- **ZIP Download**: Download all property reports as a single ZIP file
+- **Live Preview**: Preview merged data with property selector
 - **Multi-language Support**: Switch between English and Spanish
 - **Client-side Processing**: All processing happens in your browser - your data never leaves your device
 
@@ -56,11 +62,13 @@ npm run preview
 
 ## Usage
 
-1. **Upload Files**: Drag and drop CSV files into the two upload zones, or click to browse
-2. **Preview Data**: Review the first 5 rows of each file to ensure correctness
-3. **Merge**: Click "Merge Files" to combine both datasets
-4. **Download**: Click "Download Merged CSV" to save the result
-5. **Clear**: Use "Clear All" to reset and start over
+1. **Upload Properties File**: Drag and drop or click to upload the properties CSV (with NRU codes)
+2. **Upload Bookings File**: Drag and drop or click to upload the bookings CSV
+3. **Preview Data**: Review the first 5 rows of each file to ensure correctness
+4. **Generate Report**: Click "Generate Report" to merge the data
+5. **Select Property**: Use the dropdown to preview each property's report
+6. **Download**: Click "Download ZIP" to get all property CSVs as a ZIP file
+7. **Clear**: Use "Clear All" to reset and start over
 
 ## Project Structure
 
@@ -84,6 +92,7 @@ miguelito/
 
 - **Vite** - Build tool and dev server
 - **Papa Parse** - CSV parsing library
+- **JSZip** - ZIP file generation
 - **i18next** - Internationalization framework
 - **Pure JavaScript** - No frontend framework
 
