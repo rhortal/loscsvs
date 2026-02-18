@@ -5,6 +5,7 @@
 - **Type**: Client-side web application (Vite + pure JS)
 - **Purpose**: Merge property and booking data into separate reports per property
 - **License**: Proprietary - All rights reserved (see LICENSE.md)
+- **Live URL**: https://loscsvs.pages.dev
 
 ## Key Files
 - `src/main.js` - Main application logic
@@ -15,17 +16,18 @@
 
 ## Testing Files
 Use these files for testing:
-- **Properties file**: `csv-examples/listado apartamento para enviar.csv` (104 rows)
-- **Bookings file**: `csv-examples/Listado pruebas 1-7-25 CSV.csv` (14 bookings)
+- **Properties file**: `csv-examples/ListadoApartamentos.csv` (148 rows)
+- **Bookings file**: `csv-examples/Listado pruebas 1-7-25 CSV.csv` (14 bookings - original)
+- **Full test file**: `csv-examples/Listado pruebas completo.csv` (24 bookings with synthetic long stays)
 
 ## Current Implementation
 
 ### Merge Rules
 1. Match bookings to properties by ID (`Id. Vivienda`) or name (`Alojamiento`)
 2. For each property:
-   - **Tourist bookings** (1-10 nights): Use "Turistico" NRU code (ESFCTU...)
-   - **Non-tourist bookings** (11+ nights): Use "no turistico" NRU code (ESFCNT...)
-   - Tourist bookings first, then 4 empty rows if property has both types, then non-tourist
+   - **Tourist bookings** (1-10 nights): Use "Turistico" NRU code (ESFCTU...), Finalidad = "Vacacional/Turístico"
+   - **Non-tourist bookings** (11+ nights): Use "no turistico" NRU code (ESFCNT...), Finalidad = "No turístico"
+   - Tourist bookings first (sorted by date), then 4 empty rows if property has both types, then non-tourist (sorted by date)
 3. Date format: dd.mm.aaaa (e.g., 01.07.2025)
 4. Exit date empty if cross-year
 
@@ -36,14 +38,21 @@ Use these files for testing:
 - Preview shows dropdown to select between properties
 
 ### Known Issues
-- 3 bookings don't match (OCE3 3A, OCE3 2A, MAR Y VENT 4D) - these properties don't exist in properties file
+- None - all bookings match with updated properties file
 
 ## Testing
 - Run `npm run dev` to start dev server
 - Run `npm run build` to create production build
+- Test at: https://loscsvs.pages.dev
 
 ## Git Workflow
 - Create a new branch for any feature work
 - Commit with descriptive messages using `--author="AI <eleanor+ai@intellectronica.net>"`
 - Merge to main and push
 - Delete feature branches when done
+
+## Customer Testing Folder
+- `instrucciones-cliente/` - Contains customer-facing instructions and test files:
+  - `INSTRUCCIONES.md` - Spanish instructions for testing
+  - `ListadoApartamentos.csv` - Properties file (148 rows)
+  - `ListadoPruebasCompleto.csv` - Full test bookings (24 bookings with synthetic data including long stays)

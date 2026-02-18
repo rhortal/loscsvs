@@ -390,7 +390,7 @@ function mergeFiles() {
 
       const row = {
         'NRUA': nru,
-        'Finalidad (1)': 'No turístico',
+        'Finalidad (1)': 'Otros',
         'Nº de huéspedes': guests,
         'Fecha de entrada (dd.mm.aaaa)': formattedEntry,
         'Fecha de salida (dd.mm.aaaa)': formattedExit,
