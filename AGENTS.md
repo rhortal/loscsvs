@@ -26,10 +26,11 @@ Use these files for testing:
 1. Match bookings to properties by ID (`Id. Vivienda`) or name (`Alojamiento`)
 2. For each property:
    - **Tourist bookings** (1-10 nights): Use "Turistico" NRU code (ESFCTU...), Finalidad = "Vacacional/Turístico"
-   - **Non-tourist bookings** (11+ nights): Use "no turistico" NRU code (ESFCNT...), Finalidad = "No turístico"
-   - Tourist bookings first (sorted by date), then 4 empty rows if property has both types, then non-tourist (sorted by date)
+   - **Non-tourist bookings** (11+ nights): Use "no turistico" NRU code (ESFCNT...), Finalidad = "Otros"
+   - Tourist bookings first (sorted by date), then non-tourist (sorted by date) - no empty rows between
 3. Date format: dd.mm.aaaa (e.g., 01.07.2025)
 4. Exit date empty if cross-year
+5. Output columns (in order): NRUA, Fecha de entrada, Fecha de salida, Nº de huéspedes, Finalidad
 
 ### Report Generation
 - Generates separate CSV for each property

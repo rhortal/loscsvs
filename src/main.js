@@ -358,27 +358,11 @@ function mergeFiles() {
         'Finalidad (1)': 'Vacacional/Turístico',
         'Nº de huéspedes': guests,
         'Fecha de entrada (dd.mm.aaaa)': formattedEntry,
-        'Fecha de salida (dd.mm.aaaa)': formattedExit,
-        'Sin actividad (3)': ''
+        'Fecha de salida (dd.mm.aaaa)': formattedExit
       };
       propertyOutput.push(row);
       allRows.push(row);
     });
-
-    if (touristBookings.length > 0 && nonTouristBookings.length > 0) {
-      for (let i = 0; i < 4; i++) {
-        const emptyRow = {
-          'NRUA': '',
-          'Finalidad (1)': '',
-          'Nº de huéspedes': '',
-          'Fecha de entrada (dd.mm.aaaa)': '',
-          'Fecha de salida (dd.mm.aaaa)': '',
-          'Sin actividad (3)': ''
-        };
-        propertyOutput.push(emptyRow);
-        allRows.push(emptyRow);
-      }
-    }
 
     nonTouristBookings.forEach(booking => {
       const entryDate = booking['Fecha entrada'] || booking['fecha entrada'] || '';
@@ -393,8 +377,7 @@ function mergeFiles() {
         'Finalidad (1)': 'Otros',
         'Nº de huéspedes': guests,
         'Fecha de entrada (dd.mm.aaaa)': formattedEntry,
-        'Fecha de salida (dd.mm.aaaa)': formattedExit,
-        'Sin actividad (3)': ''
+        'Fecha de salida (dd.mm.aaaa)': formattedExit
       };
       propertyOutput.push(row);
       allRows.push(row);
@@ -531,7 +514,7 @@ async function downloadMerged() {
   }
 
   const zip = new JSZip();
-  const columns = ['NRUA', 'Finalidad (1)', 'Nº de huéspedes', 'Fecha de entrada (dd.mm.aaaa)', 'Fecha de salida (dd.mm.aaaa)', 'Sin actividad (3)'];
+  const columns = ['NRUA', 'Fecha de entrada (dd.mm.aaaa)', 'Fecha de salida (dd.mm.aaaa)', 'Nº de huéspedes', 'Finalidad (1)'];
 
   state.mergedByProperty.forEach((propData, propId) => {
     const csv = Papa.unparse(propData.rows, { columns });
