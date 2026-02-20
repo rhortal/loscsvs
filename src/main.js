@@ -518,7 +518,8 @@ async function downloadMerged() {
 
   state.mergedByProperty.forEach((propData, propId) => {
     const csv = Papa.unparse(propData.rows, { columns });
-    zip.file(`${propId}.csv`, csv);
+    const safeName = propData.name.replace(/[\s\/]+/g, '_');
+    zip.file(`${safeName}.csv`, csv);
   });
 
   const content = await zip.generateAsync({ type: 'blob' });

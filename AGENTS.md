@@ -35,7 +35,7 @@ Use these files for testing:
 ### Report Generation
 - Generates separate CSV for each property
 - Downloads as ZIP file containing all property CSVs
-- Filename format: `{propertyId}.csv` (e.g., 502775.csv)
+- Filename format: `{propertyName}.csv` (e.g., `Apartamento_La_Zona.csv`) - spaces replaced with underscores
 - Preview shows dropdown to select between properties
 
 ### Known Issues
